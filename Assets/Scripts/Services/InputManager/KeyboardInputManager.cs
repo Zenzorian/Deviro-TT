@@ -23,5 +23,10 @@ namespace Scripts.Services
             float rightValue = _keyboardActions.RightFrontKey.IsPressed() ? 1f : _keyboardActions.RightBackKey.IsPressed() ? -1f : 0f;
             UpdateRightStickValue(new Vector2(0f, rightValue)); 
         }
+        public override void Disable()
+        {
+            base.Disable();
+            _keyboardActions.Disable();
+        }
     }
 } 

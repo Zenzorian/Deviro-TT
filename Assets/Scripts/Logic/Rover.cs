@@ -15,10 +15,14 @@ namespace Scripts.Logic
        
         private IInputManagerService _inputManagerService;
 
+        private Rigidbody _rigidbody;
+
         public void Construct(IInputManagerService inputManagerService, RoverConfig roverConfig)
         {
            _inputManagerService = inputManagerService;
            _roverConfig = roverConfig;
+
+           _rigidbody = gameObject.GetComponent<Rigidbody>();
         }
 
         private void Update()
@@ -27,6 +31,7 @@ namespace Scripts.Logic
             
             _inputManagerService.Update();
             Move(_inputManagerService.LeftStickValue.y, _inputManagerService.RightStickValue.y);
+            RotateRover(_inputManagerService.LeftStickValue.y, _inputManagerService.RightStickValue.y);
         }
         
         private void Move(float LeftStickValue, float RightStickValue)
@@ -55,6 +60,16 @@ namespace Scripts.Logic
                 frontRightWheel.brakeTorque = 0;
                 rearRightWheel.brakeTorque = 0;
             }
-        }        
+        } 
+        void RotateRover(float leftStick, float rightStick)
+        {           
+            if (Mathf.Sign(leftStick) != Mathf.Sign(rightStick) && Mathf.Abs(leftStick - rightStick) > 1.5f)
+            {
+                float input = leftStick - rightStick; 
+                float rotation = input * _roverConfig.rotationSpeed * Time.fixedDeltaTime;
+                Quaternion turnRotation = Quaternion.Euler(0f, rotation, 0f);
+                _rigidbody.MoveRotation(_rigidbody.rotation * turnRotation);
+            }
+        }       
     }
 }

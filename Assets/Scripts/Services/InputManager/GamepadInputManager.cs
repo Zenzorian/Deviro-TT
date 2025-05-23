@@ -19,5 +19,10 @@ namespace Scripts.Services
 
             UpdateRightStickValue(_gamepadActions.RightStickMove.ReadValue<Vector2>());         
         }
+        public override void Disable()
+        {
+            base.Disable();
+            _gamepadActions.Disable();
+        }
     }
 } 

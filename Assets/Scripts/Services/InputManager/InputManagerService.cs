@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace Scripts.Services
 {
@@ -8,7 +9,14 @@ namespace Scripts.Services
        
         public Vector2 LeftStickValue => _inputManagerService.LeftStickValue;
         public Vector2 RightStickValue => _inputManagerService.RightStickValue;
-      
+        
+        public event Action OnValueChanged
+        {
+            add => _inputManagerService.OnValueChanged += value;
+            remove => _inputManagerService.OnValueChanged -= value;
+        }
+       
+
         public void Update()        
             =>_inputManagerService.Update();        
 
@@ -16,9 +24,18 @@ namespace Scripts.Services
             =>_inputManagerService.Reset();        
 
         public void SwitchToKeyboard()
-            =>_inputManagerService = new KeyboardInputManager();        
+        {              
+           Disable();
+            _inputManagerService = new KeyboardInputManager();  
+        }      
 
         public void SwitchToGamepad()
-            =>_inputManagerService = new GamepadInputManager();
+        { 
+            Disable();
+            _inputManagerService = new GamepadInputManager();
+        }
+
+        public void Disable()
+            => _inputManagerService?.Disable();
     }
 }

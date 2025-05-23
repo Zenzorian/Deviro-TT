@@ -4,7 +4,9 @@ using System;
 namespace Scripts.Services
 {
     public interface IInputManagerService
-    {
+    {        
+        event Action OnValueChanged;
+
         Vector2 LeftStickValue { get; }
         Vector2 RightStickValue { get; } 
      
@@ -12,5 +14,6 @@ namespace Scripts.Services
         void Reset();
         void SwitchToKeyboard();
         void SwitchToGamepad();
+        void Disable();
     }
 } 

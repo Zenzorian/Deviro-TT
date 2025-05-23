@@ -6,6 +6,7 @@ namespace Scripts.ScriptableObjects
     public class RoverConfig : ScriptableObject
     {
         public float maxMotorTorque = 500f;       
-        public float brakeTorque = 1000f;          
+        public float brakeTorque = 1000f;   
+        public float rotationSpeed = 200f; 
     }
 }

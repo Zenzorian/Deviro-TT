@@ -4,6 +4,7 @@ using UnityEngine;
 using Scripts.ScriptableObjects;
 using Scripts.UI.Markers;
 using Scripts.Logic;
+using System;
 
 namespace Scripts.Services
 {
@@ -26,42 +27,46 @@ namespace Scripts.Services
             
         
         public async Task<MainMenuButtons> CreateMainMenu()
-        {
+        {           
             GameObject mainMenu = await _assets.Instantiate(AssetAddress.MainMenuPath);
-      
-            return mainMenu.GetComponent<MainMenuButtons>();
+            return mainMenu.GetComponent<MainMenuButtons>();           
         }
         
         public async Task<GameObject> CreateHud()
-        {
-            GameObject hud =  await _assets.Instantiate(AssetAddress.HudPath);
-      
-            // hud.GetComponentInChildren<MoveButtons>().Construct(_inputService,_audioService);
-            // var statusPanel = hud.GetComponentInChildren<StatusPanel>();
-            // statusPanel.Construct(_gameProgressService);
-            // statusPanel.SetHeartText(_gameProgressService.CurrentLives);
-            
-            return hud;
+        {  
+            GameObject hud = await _assets.Instantiate(AssetAddress.HudPath);
+            return hud;          
         }
         
         public async Task<GameObject> CreateRover(Vector3 at, RoverConfig roverConfig)
         {  
+           
             Vector3 spawnPosition = new Vector3(at.x, at.y + ROVER_Y_OFFSET, at.z);
-
-            GameObject roverObject = await _assets.Instantiate(AssetAddress.RoverPath ,spawnPosition);            
+            GameObject roverObject = await _assets.Instantiate(AssetAddress.RoverPath, spawnPosition);            
 
             Rover rover = roverObject.GetComponent<Rover>();
-            rover.Construct(_inputManager,roverConfig);
+            if (rover == null)
+            {
+                throw new NullReferenceException("Rover component not found on instantiated object");
+            }
+
+            rover.Construct(_inputManager, roverConfig);
 
             var camera = GameObject.FindAnyObjectByType<Camera>();
+            if (camera == null)
+            {
+                throw new NullReferenceException("Camera not found in scene");
+            }
+
             camera.gameObject.AddComponent<CameraFollow>().target = roverObject.transform;
 
             return roverObject;
+           
         }
 
         public void Cleanup()
-        {
-            _assets.Cleanup();
-        }               
+        {           
+            _assets.Cleanup();        
+        }              
     }
 }
